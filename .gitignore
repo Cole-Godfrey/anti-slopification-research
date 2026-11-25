@@ -1,3 +1,7 @@
 .loop/
-/START.md
-/AGENTS.md
+START.md
+AGENTS.md
+CLAUDE.md
+plot.py
+LOOP.md
+goal.md
