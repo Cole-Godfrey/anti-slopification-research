@@ -10,8 +10,8 @@ Write a short `goal.md` with the agreed objective, required outcomes, and essent
 constraints. Leave implementation choices open.
 
 Initialize Git if needed. Establish the project as the baseline on `main` without
-discarding user work. Commit the goal and initial project. Create `.loop/` and
-`.loop/results.tsv` with this tab-separated header:
+discarding user work. Commit the initial project. Keep `goal.md` out of Git.
+Create `.loop/` and `.loop/results.tsv` with this tab-separated header:
 
 ```text
 series	experiment	branch	revision	score	status	description
@@ -88,9 +88,9 @@ git show archive/001-description
 ## Judge
 
 Review one pending request in a fresh session. Evaluate the requested commit
-against its committed `goal.md`. Choose your verification actions and give
-concrete evidence for a score from 0.0 to 100.0. List unmet required outcomes.
-Unobserved behavior remains unverified.
+against `goal.md`. Choose your verification actions and give concrete evidence
+for a score from 0.0 to 100.0. List unmet required outcomes. Unobserved behavior
+remains unverified.
 
 For a candidate, inspect the specified `main` commit to identify regressions.
 Score the candidate against the goal; the builder uses the recorded baseline
