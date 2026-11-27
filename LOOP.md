@@ -2,11 +2,9 @@
 
 ## Setup
 
-Inspect the project, then interview the user about the goal. Clarify who it is
-for, the problem, required outcomes, scope, and constraints. Ask a few questions
-at a time and follow up until the intended result is clear.
+Inspect the project, then interview the user about the goal. Ask questions until the intended result is clear.
 
-Write a short `goal.md` with the agreed objective, required outcomes, and essential
+Write a short `goal.md` with the objective, required outcomes, and essential
 constraints. Leave implementation choices open.
 
 Initialize Git if needed. Establish the project as the baseline on `main` without
