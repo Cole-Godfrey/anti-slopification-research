@@ -5,7 +5,7 @@
 From the new project's directory:
 
 ```sh
-gh api repos/Cole-Godfrey/anti-slopification-research/tarball/main | tar -xz --strip-components=1
+gh api repos/Cole-Godfrey/generalized-auto-research/tarball/main | tar -xz --strip-components=1
 ```
 
 ## Setup once
@@ -31,21 +31,28 @@ to goal.md. Create a branch, make your initial implementation, commit it, and
 prepare a review request. Finish when the request is ready.
 ```
 
-## 2. Open a fresh judge session.
+## 2. Open a fresh judge session in `.loop/judge/`.
 
-Use a separate model if available. Paste:
+From the project, start the judge in its folder. Safe mode turns off CLAUDE.md,
+skills, plugins, hooks, and MCP servers, so only `JUDGE.md` and `goal.md` steer
+it. Use a separate model if available.
+
+```sh
+cd .loop/judge && claude --safe-mode
+```
+
+Paste:
 
 ```text
-Read LOOP.md and review the pending request in .loop/review.json as the judge.
-Write your score and findings, update the score log and graph, then finish.
+Read JUDGE.md and judge this packet. Write result.json, then finish.
 ```
 
 ## 3. Return to the same builder session.
 
 ```text
-Read the review in .loop/review.json and follow LOOP.md for this attempt.
-Choose whether to merge, abandon, or revise. If revising, commit your changes
-and request another review.
+Log the judge's review and follow LOOP.md for this attempt. Choose whether to
+merge, abandon, or revise. If revising, commit your changes and request
+another review.
 ```
 
 Repeat steps 2 and 3 while working on that branch. After MERGED or ABANDONED,

@@ -18,13 +18,14 @@ series	experiment	branch	revision	score	status	description
 ```
 
 Write a baseline review request for the `main` commit and end the setup session.
-The judge records its score before the first attempt starts.
+The judge scores it before the first attempt starts.
 
 ## Start an attempt
 
 In a fresh builder session:
 
-1. Read `goal.md`, the current `main` commit, and its recorded baseline score.
+1. If `.loop/review.json` holds a judged baseline that isn't logged, log it.
+   Read `goal.md`, the current `main` commit, and its recorded baseline score.
    The latest `baseline` or `merge` row identifies that baseline. Check the
    history for relevant failed approaches and inspect their archives when useful.
 2. Create `try/001-description` from `main`, using the next unused attempt number.
@@ -34,8 +35,8 @@ In a fresh builder session:
 
 ## Respond to a review
 
-Continue in the same builder session for this branch. Read the completed review
-for the requested commit and choose one action:
+Continue in the same builder session for this branch. Log the completed review,
+read it, and choose one action:
 
 - Merge: allowed only when the candidate's score is at least **1.0 higher** than
   the recorded score of the current baseline. Switch to `main`, fast-forward it
@@ -57,9 +58,9 @@ A judge score **above 90.0** completes the project. Finalize that reviewed commi
 and report COMPLETE with its branch, commit, and score. Merge it first if it meets
 the 1.0-point gain rule; otherwise leave it available on its branch.
 
-Run `python3 plot.py` after recording a merge or abandonment. Keep the goal fixed
-within a scoring series. A changed goal or judge model starts a new series and
-baseline review.
+Run `python3 plot.py` after logging a review or recording a merge or abandonment.
+Keep the goal fixed within a scoring series. A changed goal or judge model starts
+a new series and baseline review.
 
 ## Archive
 
@@ -87,18 +88,16 @@ git show archive/001-description
 
 ## Judge
 
-Review one pending request in a fresh session. Evaluate the requested commit
-against `goal.md`. Choose your verification actions and give concrete evidence
-for a score from 0.0 to 100.0. List unmet required outcomes. Unobserved behavior
-remains unverified.
+The judge is blind. It runs in a fresh session in `.loop/judge/` and follows
+`JUDGE.md`. With Claude Code, start it with `--safe-mode`, which keeps CLAUDE.md
+files, skills, plugins, hooks, and MCP servers out of its context. It sees
+`goal.md` and a snapshot of the requested commit, and nothing else: no LOOP.md,
+score log, past reviews, Git history, or hint of whether the commit is a
+baseline or a candidate. It writes its result there, and the builder logs it.
 
-For a candidate, inspect the specified `main` commit to identify regressions.
-Score the candidate against the goal; the builder uses the recorded baseline
-score to decide whether it can merge.
-
-Use `.loop/scratch/` for disposable checkouts or checks. Do not modify submitted
-source, and remove scratch work afterward. Fill in the result, append this
-review to the score log once, run `python3 plot.py`, and end the session.
+The judge reads the snapshot, so keep review talk out of the project: no
+comments, docs, or file names about reviews, scores, or feedback. Commit
+messages are fine, since the snapshot leaves them out.
 
 ## Score history
 
@@ -113,7 +112,7 @@ Use these statuses:
 - `merge`: promotion of a reviewed commit to `main`.
 - `abandon`: an attempt archived without merging.
 
-The judge appends review rows; the builder appends merge and abandon rows.
+The builder appends every row, including review rows when it logs a review.
 Merge and abandon rows reuse the latest review number. For a merge, record the
 promoted commit's judged score. For an abandonment, record the tip's score if that
 commit was reviewed; otherwise leave score empty. Mention the archive tag and
@@ -122,25 +121,37 @@ Append complete newline-ended rows. The graph uses the latest scoring series.
 
 ## Review handoff
 
-Overwrite `.loop/review.json` for each request, with these fields:
+For each request, rebuild `.loop/judge/` with only what the judge needs:
+
+```sh
+rm -rf .loop/judge && mkdir -p .loop/judge/project
+git archive <revision> | tar -x -C .loop/judge/project
+cp goal.md JUDGE.md .loop/judge/
+git init -q .loop/judge
+```
+
+The empty repo stops Git from walking up to the project's history.
+
+Overwrite `.loop/review.json` with the request:
 
 ```text
 kind: baseline or candidate
 branch: main or the attempt branch
 revision: exact commit to judge
-incumbent: current main commit for a candidate, otherwise null
 result: null
 ```
 
-The judge fills `result`, preserving the request:
+The judge writes `.loop/judge/result.json`:
 
 ```text
 score: 0.0–100.0
 unmet_required: required outcomes still unmet
-regressions: previously satisfied required outcomes now broken
 evidence: concrete observations
 feedback: concise deficiencies for the next revision
 ```
+
+To log a review, copy that file into `result`, append the review row to the
+score log, run `python3 plot.py`, and delete `.loop/judge/`.
 
 Keep one outstanding request at a time. `.loop/review.json` holds the current
 handoff, `.loop/results.tsv` holds the history, and `.loop/progress.svg` holds the
