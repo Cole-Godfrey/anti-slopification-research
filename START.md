@@ -18,7 +18,7 @@ Read the setup section of LOOP.md. My objective is:
 [REPLACE THIS WITH YOUR ABSTRACT GOAL]
 
 Ask me questions, then draft a short goal.md describing the desired result.
-Prepare the baseline on main and request its initial review.
+Prepare the baseline on main.
 ```
 
 Answer its questions, then run the pilot in `PILOT.md`.

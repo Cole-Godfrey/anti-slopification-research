@@ -15,8 +15,8 @@ Create `.loop/` and `.loop/results.tsv` with this tab-separated header:
 series	experiment	branch	revision	score	status	description
 ```
 
-Write a baseline review request for the `main` commit and end the setup session.
-The pilot scores it before the first attempt starts.
+Record a `baseline` row for the `main` commit with score 0.0 and end the setup
+session.
 
 ## Start an attempt
 
@@ -124,8 +124,8 @@ Then rebuild the judges' folders:
 ```sh
 rm -rf .loop/judge
 for n in 1 2 3; do  # one folder per judge in MODELS.md
-  mkdir -p .loop/judge/$n/project
-  git archive <revision> | tar -x -C .loop/judge/$n/project
+  mkdir -p .loop/judge/$n/projects/a
+  git archive <revision> | tar -x -C .loop/judge/$n/projects/a
   cp goal.md JUDGE.md .loop/judge/$n/
   git init -q .loop/judge/$n  # hides project history from the judge
 done
