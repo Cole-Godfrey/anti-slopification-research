@@ -48,7 +48,7 @@ Read JUDGE.md and follow it.
 ## 3. Return to the same builder session.
 
 ```text
-Read the review in .loop/judge/result.json and follow LOOP.md for this attempt.
+/goal Read the review in .loop/judge/result.json and follow LOOP.md for this attempt.
 Choose whether to merge, abandon, or revise. If revising, commit your changes
 and request another review.
 ```
