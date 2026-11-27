@@ -31,28 +31,26 @@ to goal.md. Create a branch, make your initial implementation, commit it, and
 prepare a review request. Finish when the request is ready.
 ```
 
-## 2. Open a fresh judge session in `.loop/judge/`.
+## 2. Open a fresh judge session.
 
-From the project, start the judge in its folder. Safe mode turns off CLAUDE.md,
-skills, plugins, hooks, and MCP servers, so only `JUDGE.md` and `goal.md` steer
-it. Use a separate model if available.
+Use a separate model if available. From the project:
 
 ```sh
-cd .loop/judge && claude --safe-mode
+cd .loop/judge && claude --safe-mode  # no CLAUDE.md, skills, plugins, hooks, or MCP
 ```
 
 Paste:
 
 ```text
-Read JUDGE.md and judge this packet. Write result.json, then finish.
+Read JUDGE.md and follow it.
 ```
 
 ## 3. Return to the same builder session.
 
 ```text
-Log the judge's review and follow LOOP.md for this attempt. Choose whether to
-merge, abandon, or revise. If revising, commit your changes and request
-another review.
+Read the review in .loop/judge/result.json and follow LOOP.md for this attempt.
+Choose whether to merge, abandon, or revise. If revising, commit your changes
+and request another review.
 ```
 
 Repeat steps 2 and 3 while working on that branch. After MERGED or ABANDONED,
