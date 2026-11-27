@@ -56,7 +56,7 @@ and report COMPLETE with its branch, commit, and score. Merge it first if it mee
 the 1.0-point gain rule; otherwise leave it available on its branch.
 
 Run `python3 plot.py` after recording a review, merge, or abandonment. Keep the
-goal fixed within a scoring series. A changed goal or judge set starts a new
+goal fixed within a scoring series. A changed goal or judge model starts a new
 series and baseline review.
 
 ## Archive
@@ -85,16 +85,15 @@ git show archive/001-description
 
 ## Judge
 
-Each judge in `MODELS.md` works blind in `.loop/judge/<name>/` and follows
+Each judge in `MODELS.md` works blind in `.loop/judge/<n>/` and follows
 `JUDGE.md`. A review's score is the mean of theirs. Judges see only `goal.md`
-and the snapshot, so keep comments and docs about reviews or models out of the
-project.
+and the snapshot, so keep comments and docs about reviews out of the project.
 
 ## Score history
 
 Record each review in `.loop/results.tsv`. Increment `experiment` for each review,
 starting at 0 for the baseline. Keep the same series ID until the goal or judge
-set changes. Use the attempt branch name for its rows and `main` for a baseline.
+model changes. Use the attempt branch name for its rows and `main` for a baseline.
 
 Use these statuses:
 
@@ -124,11 +123,11 @@ Then rebuild the judges' folders:
 
 ```sh
 rm -rf .loop/judge
-for name in <judges>; do  # each judge name from MODELS.md
-  mkdir -p .loop/judge/$name/projects/a
-  git archive <revision> | tar -x -C .loop/judge/$name/projects/a
-  cp goal.md JUDGE.md .loop/judge/$name/
-  git init -q .loop/judge/$name  # hides project history and root instructions
+for n in 1 2 3; do  # one folder per judge in MODELS.md
+  mkdir -p .loop/judge/$n/projects/a
+  git archive <revision> | tar -x -C .loop/judge/$n/projects/a
+  cp goal.md JUDGE.md .loop/judge/$n/
+  git init -q .loop/judge/$n  # hides project history from the judge
 done
 ```
 
