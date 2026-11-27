@@ -16,7 +16,7 @@ series	experiment	branch	revision	score	status	description
 ```
 
 Write a baseline review request for the `main` commit and end the setup session.
-The judge scores it before the first attempt starts.
+The pilot scores it before the first attempt starts.
 
 ## Start an attempt
 
@@ -51,7 +51,7 @@ attempt and obtain a new baseline score and review before deciding to merge.
 
 After a merge or abandonment, the user starts a fresh builder session from `main`.
 
-A judge score **above 90.0** completes the project. Finalize that reviewed commit
+A review score **above 90.0** completes the project. Finalize that reviewed commit
 and report COMPLETE with its branch, commit, and score. Merge it first if it meets
 the 1.0-point gain rule; otherwise leave it available on its branch.
 
@@ -85,9 +85,9 @@ git show archive/001-description
 
 ## Judge
 
-The judge works blind in `.loop/judge/` and follows `JUDGE.md`. It sees only
-`goal.md` and the snapshot, so keep comments and docs about reviews out of the
-project.
+Each judge in `MODELS.md` works blind in `.loop/judge/<n>/` and follows
+`JUDGE.md`. A review's score is the mean of theirs. Judges see only `goal.md`
+and the snapshot, so keep comments and docs about reviews out of the project.
 
 ## Score history
 
@@ -119,16 +119,19 @@ branch: main or the attempt branch
 revision: exact commit to judge
 ```
 
-Then rebuild the judge's folder:
+Then rebuild the judges' folders:
 
 ```sh
-rm -rf .loop/judge && mkdir -p .loop/judge/project
-git archive <revision> | tar -x -C .loop/judge/project
-cp goal.md JUDGE.md .loop/judge/
-git init -q .loop/judge  # hides project history from the judge
+rm -rf .loop/judge
+for n in 1 2 3; do  # one folder per judge in MODELS.md
+  mkdir -p .loop/judge/$n/project
+  git archive <revision> | tar -x -C .loop/judge/$n/project
+  cp goal.md JUDGE.md .loop/judge/$n/
+  git init -q .loop/judge/$n  # hides project history from the judge
+done
 ```
 
 Keep one outstanding request at a time. `.loop/review.json` holds the current
-request, `.loop/judge/result.json` its review, `.loop/results.tsv` the history,
+request, `.loop/judge/*/result.json` its review, `.loop/results.tsv` the history,
 and `.loop/progress.svg` the graph. Archived code and attempt notes live in Git
 tags.
